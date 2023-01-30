@@ -1,22 +1,27 @@
-const bcrypt = require('bcryptjs');
-
+import * as bcrypt from 'bcryptjs';
 import dbConnect from '../../../lib/dbConnect';
+const mongoose = require('mongoose');
 
-import { User } from'../../../models/user';
-
+const User = mongoose.model('User')
 
 export default async function handler (req, res) {
- const {name, email, password} = req.body;
-  await dbConnect()
-
-    const hashPassword = await bcrypt.hash(password, 10);
-    const user = User.create({
+    await dbConnect()
+  const {name, email, password} = req.body;
+//   try{
+//   const userCheck =  User.findOne({email});
+//   if(userCheck){
+//    return res.status(401).json("error")
+//   }  
+// }
+// catch{
+    const hashPassword = await bcrypt.hash(password, 12);
+    const user = await User.create({
       name,
       email,
       password: hashPassword,
     });
-    res.status(201).json({
+    return res.status(201).json({
       user
     });
-  }
-
+    }
+  // }

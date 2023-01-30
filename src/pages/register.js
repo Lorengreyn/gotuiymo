@@ -1,84 +1,74 @@
 import { useState } from "react";
 
-export default function Register() {
-  const [name, setName] = useState('');
 
-  const [email, setEmail] = useState('');
+export default  function Register() {
+  const [userData, setUserData] = useState({
+    name:'',
+    email:'',
+    password:'',
+    repeatPassword:'',
+  });
+const submitForm = async (e) =>{
+e.preventDefault()
 
-  const [password, setPassword] = useState('');
+try{
+const response = await fetch("/api/signup",
+ {
+  headers:{
+    'Content-Type':'application/json',
+  },
+   body: JSON.stringify({
+    name:userData.name,
+    email: userData.email,
+    password: userData.password,
+    repeatPassword: userData.repeatPassword
+   }),
+   method:'POST',
+  },
+  alert('Користувач створений!')
+);
+} catch (error) {
+  console.error(error);
+}
+};
 
-  const [repeatPassword, setRepeatPassword] = useState('');
-
-  const handleChange = event => {
-    const { name, value } = event.currentTarget;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      case 'repeatPassword':
-        setRepeatPassword(value);
-        break;
-      default:
-        return;
-    }
-  };
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const data ={ name, email, password, repeatPassword }
-    // try {
-      await fetch('/api/signup',{method:'post',
-    body:data});
-      
-      // formFieldsReset();
-    // } catch (error) {
-    //   alert(`error`);
-    //   formFieldsReset();
-    // }
-  };
-
-  // const formFieldsReset = () => {
-  //   setName('');
-  //   setEmail('');
-  //   setPassword('');
-  //   setRepeatPassword('');
-  // };
-
+const handleChange = (e) => {
+const { name, value } = e.target;
+setUserData({ ...userData, [name]: value });
+};
 
     return (
       <div>
-        
-          <form onSubmit={handleSubmit}>
+        <h1>Реєстрація</h1>
+        <form
+          onSubmit={submitForm}>
             <div>
-              <label>Ім`я</label>
-              <input type="text" name="name" value={name} onChange={handleChange}/>
+              <label htmlFor="name">Ім`я</label>
+              <input type="text" name="name"  onChange={(e) => handleChange(e)}
+              required/>
             </div>
   
             <div>
-              <label>Email</label>
-              <input type="text" name="email" value={email} onChange={handleChange}/>
+              <label htmlFor="email">Email</label>
+              <input type="text" name="email"  onChange={(e) => handleChange(e)}
+              required/>
             </div>
   
             <div>
-              <label>Пароль</label>
-              <input type="password" name="password" value={password} onChange={handleChange}/>
+              <label htmlFor="password">Пароль</label>
+              <input type="password" name="password"  onChange={(e) => handleChange(e)}
+              required/>
             </div>
 
             <div>
-              <label>Підтвердіть пароль</label>
-              <input type="password" name="repeatPassword" value={repeatPassword} onChange={handleChange}/>
+              <label htmlFor="repeatPassword">Підтвердіть пароль</label>
+              <input type="password" name="repeatPassword"  onChange={(e) => handleChange(e)}
+              required/>
             </div>
   
             <button type="submit" >Зареєструватись</button>
-          </form>
-       
+     </form>
+        
       </div>
     )
   }

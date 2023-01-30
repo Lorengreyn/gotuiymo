@@ -1,12 +1,13 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
+import {Schema, model} from 'mongoose'
 
-const { handleSchemaValidationErrors } = require('../helpers/hendelSchemaValidationsErrors');
 
 const emailRegexp = /[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+/;
 
-const userSchema = new Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -27,7 +28,7 @@ const userSchema = new Schema(
       type: String,
     },
     recipe: [{
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'recipe',
       default: [],
     }],
@@ -39,7 +40,7 @@ const userSchema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
-userSchema.post('save', handleSchemaValidationErrors);
+
 
 userSchema.methods.validatePassword = function (password) {
   return bcrypt.compare(password, this.password);
@@ -67,9 +68,7 @@ const schemas = {
   verifyEmailSchema,
 };
 
-const User = model('user', userSchema);
 
-module.exports = {
-  User,
-  schemas,
-};
+
+module.exports =  mongoose.model('User', userSchema);
+
