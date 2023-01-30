@@ -1,7 +1,9 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 
 export default  function Register() {
+  const router = useRouter()
   const [userData, setUserData] = useState({
     name:'',
     email:'',
@@ -25,7 +27,8 @@ const response = await fetch("/api/signup",
    }),
    method:'POST',
   },
-  alert('Користувач створений!')
+  alert('Користувач створений!'),
+  router.push('/login')
 );
 } catch (error) {
   console.error(error);
