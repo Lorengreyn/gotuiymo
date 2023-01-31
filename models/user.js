@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-const Joi = require('joi');
 const bcrypt = require('bcryptjs');
-import {Schema, model} from 'mongoose'
+mongoose.set('strictQuery', true);
 
 
 const emailRegexp = /[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+/;
@@ -46,29 +45,6 @@ userSchema.methods.validatePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const registerSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
-  repeatPassword: Joi.string().required().valid(Joi.ref('password')),
-});
 
-const loginSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
-});
-
-const verifyEmailSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-});
-
-const schemas = {
-  registerSchema,
-  loginSchema,
-  verifyEmailSchema,
-};
-
-
-
-module.exports =  mongoose.model('User', userSchema);
+module.exports =  mongoose.model.User || mongoose.model('User', userSchema)
 

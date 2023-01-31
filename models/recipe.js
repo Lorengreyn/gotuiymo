@@ -1,9 +1,8 @@
-const { Schema, model } = require('mongoose');
-const Joi = require('joi');
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
-const { handleSchemaValidationErrors } = require('../helpers');
 
-const bookSchema = new Schema(
+const recipeSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -41,7 +40,7 @@ const bookSchema = new Schema(
       default: '',
     },
     owner: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
       required: true,
     },
@@ -49,17 +48,8 @@ const bookSchema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
-bookSchema.post('save', handleSchemaValidationErrors);
 
-const addSchema = Joi.object({
-  title: Joi.string().min(1).required(),
-  rating: Joi.number().max(5).optional(),
-  resume: Joi.string().required(),
-});
 
-const Book = model('book', bookSchema);
 
-module.exports = {
-  Book,
-  addSchema,
-};
+
+module.exports = mongoose.model('Recipe', recipeSchema);
